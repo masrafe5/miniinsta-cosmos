@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ photo.title }} – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap" style="max-width:1000px">
+<div style="background:var(--bg3);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;flex-wrap:wrap">
+
+  <!-- Image -->
+  <div style="flex:1 1 380px;background:#000;display:flex;align-items:center;justify-content:center;min-height:420px">
+    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" style="width:100%;max-height:640px;object-fit:contain;display:block">
+  </div>
+
+  <!-- Info panel -->
+  <div style="flex:0 0 340px;display:flex;flex-direction:column;border-left:1px solid var(--border)">
+
+    <!-- Author -->
+    <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border)">
+      <a href="{% url 'user_profile' photo.author.username %}">
+        {% if photo.author.profile_picture %}<img src="{{ photo.author.profile_picture.url }}" class="av av40" alt="">
+        {% else %}<div class="avph av40" style="font-size:15px">{{ photo.author.username|first|upper }}</div>{% endif %}
+      </a>
+      <div style="flex:1;min-width:0">
+        <a href="{% url 'user_profile' photo.author.username %}" class="fw6 fs13" style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          {{ photo.author.username }}{% if photo.author.is_creator %}<span class="bdg bdg-c">Creator</span>{% endif %}
+        </a>
+        {% if photo.location %}<div class="fs12 tc3" style="margin-top:2px"><i class="fas fa-location-dot" style="font-size:10px;margin-right:3px"></i>{{ photo.location }}</div>{% endif %}
+      </div>
+      {% if user == photo.author %}
+      <div class="drop">
+        <button style="background:none;border:none;color:var(--text2);font-size:16px;padding:6px"><i class="fas fa-ellipsis"></i></button>
+        <div class="dd" style="right:0">
+          <a class="di" href="{% url 'edit_photo' photo.pk %}"><i class="fas fa-pen"></i>Edit Photo</a>
+          <form method="post" action="{% url 'delete_photo' photo.pk %}" onsubmit="return confirm('Delete this photo?')">{% csrf_token %}
+            <button type="submit" class="di red" style="width:100%;text-align:left;background:none;border:none;font-family:inherit;cursor:pointer"><i class="fas fa-trash"></i>Delete</button>
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Scrollable comments -->
+    <div id="comments" style="flex:1;overflow-y:auto;max-height:340px;padding:16px">
+      <div style="margin-bottom:14px;font-size:14px">
+        <span class="fw6">{{ photo.author.username }}</span>
+        <span style="color:var(--text2);margin-left:4px">{{ photo.caption }}</span>
+        <div class="fs12 tc3" style="margin-top:4px">{{ photo.created_at|timesince }} ago</div>
+      </div>
+      {% if photo.get_tags_list %}<div style="margin-bottom:12px">{% for t in photo.get_tags_list %}<span class="tag">#{{ t }} </span>{% endfor %}</div>{% endif %}
+      {% if photo.get_people_list %}<div style="margin-bottom:12px;font-size:13px;color:var(--text3)"><i class="fas fa-users" style="margin-right:4px"></i>{{ photo.get_people_list|join:", " }}</div>{% endif %}
+      <div style="border-top:1px solid var(--border);margin-bottom:12px"></div>
+      {% for c in comments %}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;font-size:13px">
+        <div>
+          <a href="{% url 'user_profile' c.author.username %}" class="fw6" style="color:var(--text)">{{ c.author.username }}</a>
+          <span style="color:var(--text2);margin-left:4px">{{ c.text }}</span>
+          <div class="fs12 tc3" style="margin-top:2px">{{ c.created_at|timesince }} ago</div>
+        </div>
+        {% if user == c.author or user == photo.author %}
+        <a href="{% url 'delete_comment' c.pk %}" onclick="return confirm('Delete?')" style="color:var(--text3);font-size:13px;margin-left:8px;flex-shrink:0;padding:2px 4px"><i class="fas fa-xmark"></i></a>
+        {% endif %}
+      </div>
+      {% empty %}<p style="text-align:center;color:var(--text3);font-size:13px">No comments yet. Be the first!</p>{% endfor %}
+    </div>
+
+    <!-- Like bar -->
+    <div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'like_photo' photo.pk %}" style="display:contents">{% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'photo_detail' photo.pk %}">
+          <button type="submit" class="act {% if user_liked %}lk{% endif %}">{% if user_liked %}<i class="fas fa-heart"></i>{% else %}<i class="far fa-heart"></i>{% endif %}</button>
+        </form>
+        {% endif %}
+        <span class="fw6 fs13">{{ likes_count }} like{{ likes_count|pluralize }}</span>
+        <span class="ml-a fs12 tc3">{{ photo.created_at|date:"N j, Y" }}</span>
+      </div>
+    </div>
+
+    <!-- Rating -->
+    {% if user.is_authenticated and user != photo.author %}
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span class="fs13 fw6">Rate this</span>
+        {% if avg_rating %}<span style="font-size:12px;color:#fbbf24"><i class="fas fa-star"></i> {{ avg_rating }}/5</span><span class="fs12 tc3">({{ rating_count }})</span>
+        {% else %}<span class="fs12 tc3">No ratings yet</span>{% endif %}
+      </div>
+      <form method="post" action="{% url 'rate_photo' photo.pk %}" style="display:flex;align-items:center;gap:4px">{% csrf_token %}
+        {% for i in "12345" %}
+        <input type="radio" name="score" value="{{ forloop.counter }}" id="s{{ forloop.counter }}" {% if user_rating and user_rating.score == forloop.counter %}checked{% endif %} style="display:none">
+        <label for="s{{ forloop.counter }}" class="sl-star">&#9733;</label>
+        {% endfor %}
+        <button type="submit" class="btn btn-g sm" style="margin-left:8px">Rate</button>
+      </form>
+    </div>
+    {% elif avg_rating %}
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px">
+      <i class="fas fa-star" style="color:#fbbf24"></i> {{ avg_rating }}/5 <span class="tc3">({{ rating_count }} rating{{ rating_count|pluralize }})</span>
+    </div>
+    {% endif %}
+
+    <!-- Add comment -->
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'add_comment' photo.pk %}" class="add-c">{% csrf_token %}
+      <input type="text" name="text" placeholder="Add a comment…" required autocomplete="off">
+      <button type="submit" class="post-btn">Post</button>
+    </form>
+    {% else %}
+    <div style="padding:14px 16px;text-align:center;font-size:13px;color:var(--text3)"><a href="{% url 'login' %}" style="color:var(--acc)">Log in</a> to like &amp; comment.</div>
+    {% endif %}
+
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function(){
+  const labels=document.querySelectorAll('.sl-star');
+  labels.forEach((lbl,i)=>{const r=document.getElementById('s'+(i+1));if(r&&r.checked)labels.forEach((l,j)=>l.classList.toggle('on',j<=i))});
+  labels.forEach((lbl,i)=>{
+    lbl.addEventListener('mouseover',()=>labels.forEach((l,j)=>l.classList.toggle('on',j<=i)));
+    lbl.addEventListener('mouseout',()=>{let c=-1;labels.forEach((_,j)=>{if(document.getElementById('s'+(j+1))?.checked)c=j});labels.forEach((l,j)=>l.classList.toggle('on',j<=c))});
+    lbl.addEventListener('click',()=>{document.getElementById('s'+(i+1)).checked=true;labels.forEach((l,j)=>l.classList.toggle('on',j<=i))});
+  });
+})();
+</script>
+{% endblock %}

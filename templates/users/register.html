@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ title|default:"Sign Up" }} – MiniInsta{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div style="width:100%;max-width:460px">
+    <div class="auth-box" style="max-width:460px">
+      <span class="auth-logo">MiniInsta</span>
+      <p class="auth-sub">{% if title == "Create Creator Account" %}Create a new Creator account (staff only).{% else %}Join MiniInsta and start sharing your world.{% endif %}</p>
+      <form method="post">{% csrf_token %}{{ form|crispy }}
+        <button type="submit" class="btn btn-p lg full" style="margin-top:18px">{{ title|default:"Create Account" }}</button>
+      </form>
+    </div>
+    {% if not title or title == "Sign Up" %}
+    <p class="auth-foot">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

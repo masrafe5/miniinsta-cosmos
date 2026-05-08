@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Feed – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap">
+<div class="fl">
+
+  <!-- Feed -->
+  <div class="fc">
+    {% if not photos %}
+    <div class="es"><div class="es-i"><i class="fas fa-camera-retro"></i></div><h5>Nothing here yet</h5><p>Be the first to share something beautiful.</p><a href="{% url 'upload_photo' %}" class="btn btn-p">Upload a Photo</a></div>
+    {% endif %}
+
+    {% for photo in photos %}
+    <div class="pc">
+      <!-- Head -->
+      <div class="pc-h">
+        <a href="{% url 'user_profile' photo.author.username %}">
+          {% if photo.author.profile_picture %}<img src="{{ photo.author.profile_picture.url }}" class="av av40" alt="">
+          {% else %}<div class="avph av40" style="font-size:15px">{{ photo.author.username|first|upper }}</div>{% endif %}
+        </a>
+        <div class="pc-h-info">
+          <div class="un">
+            <a href="{% url 'user_profile' photo.author.username %}" class="fw6" style="color:var(--text)">{{ photo.author.username }}</a>
+            {% if photo.author.is_creator %}<span class="bdg bdg-c">Creator</span>{% endif %}
+          </div>
+          <div class="um">{% if photo.location %}<i class="fas fa-location-dot" style="font-size:10px;margin-right:3px"></i>{{ photo.location }} · {% endif %}{{ photo.created_at|timesince }} ago</div>
+        </div>
+        {% if photo.average_rating %}<span style="font-size:12px;color:#fbbf24;display:flex;align-items:center;gap:3px;margin-left:auto;flex-shrink:0"><i class="fas fa-star"></i>{{ photo.average_rating }}</span>{% endif %}
+      </div>
+
+      <!-- Image -->
+      <a href="{% url 'photo_detail' photo.pk %}"><img src="{{ photo.image.url }}" class="pc-img" alt="{{ photo.title }}"></a>
+
+      <!-- Actions -->
+      <div class="pc-acts">
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'like_photo' photo.pk %}" style="display:contents">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button type="submit" class="act {% if photo.pk in liked_ids %}lk{% endif %}">{% if photo.pk in liked_ids %}<i class="fas fa-heart"></i>{% else %}<i class="far fa-heart"></i>{% endif %}</button>
+        </form>
+        {% else %}<a href="{% url 'login' %}" class="act"><i class="far fa-heart"></i></a>{% endif %}
+        <a href="{% url 'photo_detail' photo.pk %}#comments" class="act" style="color:var(--text2)"><i class="far fa-comment"></i></a>
+        <a href="{% url 'photo_detail' photo.pk %}" class="act" style="color:var(--text2)"><i class="fas fa-arrow-up-right-from-square" style="font-size:1rem"></i></a>
+        <span class="ml-a" style="font-size:13px;color:var(--text3)">{{ photo.likes.count }} like{{ photo.likes.count|pluralize }}</span>
+      </div>
+
+      <!-- Meta -->
+      <div class="pc-meta">
+        <div class="pc-cap"><strong>{{ photo.author.username }}</strong> {{ photo.caption }}</div>
+        {% if photo.get_tags_list %}<div style="margin-top:5px">{% for t in photo.get_tags_list %}<span class="tag">#{{ t }} </span>{% endfor %}</div>{% endif %}
+      </div>
+
+      <!-- Comments preview -->
+      <div class="pc-cmts">
+        {% with photo.comments.all as all_c %}
+          {% if all_c.count > 2 %}<a href="{% url 'photo_detail' photo.pk %}#comments" class="v-all">View all {{ all_c.count }} comments</a>{% endif %}
+          {% for c in all_c|slice:"-2:" %}<div style="margin-top:3px"><strong>{{ c.author.username }}</strong> {{ c.text }}</div>{% endfor %}
+        {% endwith %}
+      </div>
+
+      <!-- Add comment -->
+      {% if user.is_authenticated %}
+      <form method="post" action="{% url 'add_comment' photo.pk %}" class="add-c">{% csrf_token %}
+        <input type="text" name="text" placeholder="Add a comment…" required autocomplete="off">
+        <button type="submit" class="post-btn">Post</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sb">
+    {% if user.is_authenticated %}
+    <div class="sbc">
+      <div class="df ac gap3" style="margin-bottom:14px">
+        {% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" class="av av48" alt="">
+        {% else %}<div class="avph av48" style="font-size:17px">{{ user.username|first|upper }}</div>{% endif %}
+        <div style="min-width:0">
+          <a href="{% url 'profile' %}" class="fw6 fs13 trunc" style="display:block">{{ user.username }}</a>
+          <div class="fs12 tc3 trunc">{{ user.get_full_name }}</div>
+          <span class="bdg {% if user.is_creator %}bdg-c{% else %}bdg-u{% endif %}" style="margin-top:4px;display:inline-block">{{ user.role|capfirst }}</span>
+        </div>
+      </div>
+      <a href="{% url 'edit_profile' %}" class="btn btn-o sm full" style="display:flex">Edit Profile</a>
+    </div>
+
+    <div class="sbc">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:500;margin-bottom:14px">Quick Links</div>
+      <div class="dg" style="gap:6px">
+        <a href="{% url 'explore_users' %}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13px;color:var(--text2);transition:background .15s" onmouseover="this.style.background='var(--glass2)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'">
+          <i class="fas fa-compass" style="color:var(--acc2);width:16px"></i>Explore Users
+        </a>
+        <a href="{% url 'creator_dashboard' %}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13px;color:var(--text2);transition:background .15s" onmouseover="this.style.background='var(--glass2)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'">
+          <i class="fas fa-chart-line" style="color:var(--acc2);width:16px"></i>Dashboard
+        </a>
+        <a href="{% url 'upload_photo' %}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13px;color:var(--text2);transition:background .15s" onmouseover="this.style.background='var(--glass2)';this.style.color='var(--text)'" onmouseout="this.style.background='';this.style.color='var(--text2)'">
+          <i class="fas fa-cloud-arrow-up" style="color:var(--acc2);width:16px"></i>Upload Photo
+        </a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+</div>
+{% endblock %}

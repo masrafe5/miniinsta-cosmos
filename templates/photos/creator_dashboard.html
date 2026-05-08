@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Creator Dashboard – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+    <div>
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.9rem;letter-spacing:-.02em">Dashboard</h2>
+      <p class="tc3 fs13" style="margin-top:4px">Your creative analytics &amp; posts</p>
+    </div>
+    <a href="{% url 'upload_photo' %}" class="btn btn-p"><i class="fas fa-plus"></i> Upload New</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="g4" style="margin-bottom:36px">
+    <div class="sc"><div class="sl">Photos</div><div class="sn">{{ photos.count }}</div><div class="si"><i class="fas fa-images"></i></div></div>
+    <div class="sc"><div class="sl">Total Likes</div><div class="sn">{{ total_likes }}</div><div class="si"><i class="fas fa-heart"></i></div></div>
+    <div class="sc"><div class="sl">Comments</div><div class="sn">{{ total_comments }}</div><div class="si"><i class="fas fa-comment"></i></div></div>
+    <div class="sc"><div class="sl">Ratings</div><div class="sn">{{ total_ratings }}</div><div class="si"><i class="fas fa-star"></i></div></div>
+  </div>
+
+  <div class="sh"><h4>Your Posts</h4></div>
+
+  {% if not photos %}
+  <div class="es"><div class="es-i"><i class="fas fa-camera-retro"></i></div><h5>No uploads yet</h5><p>Start sharing your photos with the world.</p><a href="{% url 'upload_photo' %}" class="btn btn-p">Upload Your First Photo</a></div>
+  {% else %}
+  <div class="g3">
+    {% for photo in photos %}
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,transform .15s" onmouseover="this.style.borderColor='var(--border2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <a href="{% url 'photo_detail' photo.pk %}">
+        <img src="{{ photo.image.url }}" alt="{{ photo.title }}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
+      </a>
+      <div style="padding:14px;flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:10px">
+        <div>
+          <div class="fw6 fs13 trunc">{{ photo.title }}</div>
+          <div style="display:flex;gap:14px;margin-top:8px;font-size:12px;color:var(--text3)">
+            <span><i class="fas fa-heart" style="color:var(--pink);margin-right:3px"></i>{{ photo.likes.count }}</span>
+            <span><i class="fas fa-comment" style="color:var(--acc2);margin-right:3px"></i>{{ photo.comments.count }}</span>
+            {% if photo.average_rating %}<span><i class="fas fa-star" style="color:#fbbf24;margin-right:3px"></i>{{ photo.average_rating }}</span>{% endif %}
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <a href="{% url 'edit_photo' photo.pk %}" class="btn btn-g sm" style="flex:1">Edit</a>
+          <form method="post" action="{% url 'delete_photo' photo.pk %}" onsubmit="return confirm('Delete this photo?')" style="flex:1">{% csrf_token %}
+            <button type="submit" class="btn btn-d sm" style="width:100%">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

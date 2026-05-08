@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile_user.username }} – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap" style="max-width:900px">
+
+  <!-- Profile header -->
+  <div class="ph">
+    <div class="pr">
+      <div>
+        {% if profile_user.profile_picture %}<img src="{{ profile_user.profile_picture.url }}" class="av av110" alt="">
+        {% else %}<div class="avph av110" style="font-size:2.8rem">{{ profile_user.username|first|upper }}</div>{% endif %}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;letter-spacing:-.02em">{{ profile_user.username }}</h3>
+          <span class="bdg {% if profile_user.is_creator %}bdg-c{% else %}bdg-u{% endif %}">{{ profile_user.role|capfirst }}</span>
+          {% if user == profile_user %}
+            <a href="{% url 'edit_profile' %}" class="btn btn-o sm">Edit Profile</a>
+            <a href="{% url 'upload_photo' %}" class="btn btn-p sm"><i class="fas fa-plus" style="font-size:10px"></i> Upload</a>
+          {% elif user.is_authenticated %}
+            <form method="post" action="{% url 'follow_user' profile_user.username %}">{% csrf_token %}
+              <button type="submit" class="btn sm {% if is_following %}btn-o{% else %}btn-p{% endif %}">{% if is_following %}Following{% else %}Follow{% endif %}</button>
+            </form>
+          {% endif %}
+        </div>
+        <div class="pstats">
+          <div class="ps"><span class="ps-n">{{ photos.count }}</span><span class="ps-l">post{{ photos.count|pluralize }}</span></div>
+          <div class="ps"><span class="ps-n">{{ followers_count }}</span><span class="ps-l">follower{{ followers_count|pluralize }}</span></div>
+          <div class="ps"><span class="ps-n">{{ following_count }}</span><span class="ps-l">following</span></div>
+        </div>
+        <div style="margin-top:14px">
+          {% if profile_user.get_full_name %}<div class="fw6 fs13">{{ profile_user.get_full_name }}</div>{% endif %}
+          {% if profile_user.bio %}<div style="font-size:14px;color:var(--text2);margin-top:4px;white-space:pre-line">{{ profile_user.bio }}</div>{% endif %}
+          {% if profile_user.location %}<div style="font-size:13px;color:var(--text3);margin-top:6px"><i class="fas fa-location-dot" style="margin-right:4px"></i>{{ profile_user.location }}</div>{% endif %}
+          {% if profile_user.website %}<div style="margin-top:4px"><a href="{{ profile_user.website }}" target="_blank" style="font-size:13px;color:var(--acc)">{{ profile_user.website }}</a></div>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Photo grid -->
+  {% if photos %}
+  <div class="pgrid">
+    {% for photo in photos %}
+    <div class="gi">
+      <a href="{% url 'photo_detail' photo.pk %}">
+        <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+        <div class="gi-ov">
+          <span><i class="fas fa-heart"></i>{{ photo.likes.count }}</span>
+          <span><i class="fas fa-comment"></i>{{ photo.comments.count }}</span>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="es">
+    <div class="es-i"><i class="fas fa-camera-retro"></i></div>
+    <h5>No posts yet</h5>
+    {% if user == profile_user %}<p>Share your first photo with the community.</p><a href="{% url 'upload_photo' %}" class="btn btn-p">Upload Photo</a>
+    {% else %}<p>{{ profile_user.username }} hasn't posted anything yet.</p>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,201 @@
+/* ── Override Bootstrap/Crispy form classes for dark theme ── */
+
+/* Force all crispy/bootstrap inputs to dark style */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="search"],
+input[type="number"],
+textarea,
+select {
+  background-color: #111118 !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  color: #f0eff8 !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 14px !important;
+  transition: border-color .2s, box-shadow .2s !important;
+  box-shadow: none !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #c084fc !important;
+  box-shadow: 0 0 0 3px rgba(192,132,252,.12) !important;
+  background-color: #18181f !important;
+  outline: none !important;
+}
+
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #5c5b72 !important;
+}
+
+/* Labels */
+label,
+.form-label,
+.col-form-label {
+  color: #9b9aad !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  margin-bottom: 6px !important;
+}
+
+/* Help text */
+.form-text,
+.helptext,
+small.text-muted {
+  color: #5c5b72 !important;
+  font-size: 12px !important;
+}
+
+/* Errors */
+.invalid-feedback,
+.errorlist li {
+  color: #f87171 !important;
+  font-size: 12px !important;
+}
+.is-invalid {
+  border-color: #f87171 !important;
+}
+.form-control.is-invalid:focus {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248,113,113,.12) !important;
+}
+
+/* File input */
+input[type="file"] {
+  background: #111118 !important;
+  border: 1px dashed rgba(255,255,255,0.14) !important;
+  color: #9b9aad !important;
+  cursor: pointer !important;
+  padding: 10px 14px !important;
+}
+input[type="file"]:hover {
+  border-color: #c084fc !important;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+  accent-color: #c084fc !important;
+  width: 15px !important;
+  height: 15px !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* Select arrow */
+select {
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239b9aad' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  padding-right: 36px !important;
+}
+select option {
+  background: #18181f !important;
+  color: #f0eff8 !important;
+}
+
+/* Bootstrap button override in forms */
+.btn-primary {
+  background: linear-gradient(135deg,#7c3aed,#4f46e5) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+.btn-primary:hover {
+  opacity: .88 !important;
+  transform: translateY(-1px) !important;
+  color: #fff !important;
+}
+.btn-secondary {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #9b9aad !important;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1) !important;
+  color: #f0eff8 !important;
+}
+
+/* Crispy form row spacing */
+.mb-3 { margin-bottom: 18px !important; }
+.mb-4 { margin-bottom: 24px !important; }
+
+/* Radio widget for ratings */
+.radioselect,
+ul.radioselect {
+  list-style: none !important;
+  padding: 0 !important;
+  display: flex; gap: 12px;
+}
+.radioselect li {
+  display: flex; align-items: center; gap: 6px;
+  color: #9b9aad; font-size: 14px;
+}
+
+/* Alert messages (Bootstrap) */
+.alert {
+  border-radius: 12px !important;
+  font-size: 14px !important;
+}
+.alert-success {
+  background: rgba(45,212,191,.1) !important;
+  border: 1px solid rgba(45,212,191,.3) !important;
+  color: #2dd4bf !important;
+}
+.alert-danger, .alert-error {
+  background: rgba(248,113,113,.1) !important;
+  border: 1px solid rgba(248,113,113,.3) !important;
+  color: #f87171 !important;
+}
+.alert-info, .alert-warning {
+  background: rgba(129,140,248,.1) !important;
+  border: 1px solid rgba(129,140,248,.3) !important;
+  color: #818cf8 !important;
+}
+
+/* Pagination (if used) */
+.page-link {
+  background: #18181f !important;
+  border-color: rgba(255,255,255,.1) !important;
+  color: #9b9aad !important;
+  border-radius: 8px !important;
+}
+.page-link:hover {
+  background: rgba(255,255,255,.08) !important;
+  color: #f0eff8 !important;
+}
+.page-item.active .page-link {
+  background: linear-gradient(135deg,#7c3aed,#4f46e5) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+/* Dropdown (Bootstrap overrides) */
+.dropdown-menu {
+  background: #18181f !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 14px !important;
+}
+.dropdown-item {
+  color: #9b9aad !important;
+}
+.dropdown-item:hover {
+  background: rgba(255,255,255,.06) !important;
+  color: #f0eff8 !important;
+}
+.dropdown-divider {
+  border-color: rgba(255,255,255,.08) !important;
+}

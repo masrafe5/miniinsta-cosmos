@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{% if edit %}Edit Photo{% else %}Upload Photo{% endif %} – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap">
+<div class="fbox">
+  <h4><i class="fas fa-{% if edit %}pen{% else %}cloud-arrow-up{% endif %}" style="color:var(--acc);margin-right:10px"></i>{% if edit %}Edit Photo{% else %}Share a New Photo{% endif %}</h4>
+  {% if edit and photo.image %}
+  <div style="text-align:center;margin-bottom:24px">
+    <img src="{{ photo.image.url }}" style="max-height:200px;border-radius:12px;object-fit:cover;border:1px solid var(--border);display:inline-block" alt="">
+    <div class="fs12 tc3" style="margin-top:8px">Upload a new image to replace this one</div>
+  </div>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {{ form|crispy }}
+    <div class="dg" style="margin-top:24px">
+      <button type="submit" class="btn btn-p lg full">
+        {% if edit %}<i class="fas fa-check"></i> Save Changes{% else %}<i class="fas fa-paper-plane"></i> Share Photo{% endif %}
+      </button>
+      <a href="{% url 'feed' %}" class="btn btn-g full">Cancel</a>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}

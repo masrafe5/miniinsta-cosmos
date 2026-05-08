@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Edit Profile – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap">
+<div class="fbox">
+  <h4><i class="fas fa-user-pen" style="color:var(--acc);margin-right:10px"></i>Edit Profile</h4>
+  <div style="text-align:center;margin-bottom:28px">
+    {% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" class="av av80" style="margin:0 auto 12px" alt="">
+    {% else %}<div class="avph av80" style="margin:0 auto 12px;font-size:2rem">{{ user.username|first|upper }}</div>{% endif %}
+    <div class="fw6 fs13">{{ user.username }}</div>
+    <span class="bdg {% if user.is_creator %}bdg-c{% else %}bdg-u{% endif %}" style="margin-top:6px;display:inline-block">{{ user.role|capfirst }}</span>
+  </div>
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}{{ form|crispy }}
+    <div class="dg" style="margin-top:24px">
+      <button type="submit" class="btn btn-p lg full"><i class="fas fa-check"></i> Save Changes</button>
+      <a href="{% url 'profile' %}" class="btn btn-g full">Cancel</a>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}
