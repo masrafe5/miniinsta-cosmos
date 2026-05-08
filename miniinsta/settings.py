@@ -12,6 +12,10 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://miniinstalive-d6cufmhdczhqgab9.switzerlandnorth-01.azurewebsites.net',
+]
+
 JAZZMIN_SETTINGS = {
     "site_title": "MiniInsta Admin",
     "site_header": "MiniInsta",
@@ -173,9 +177,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
