@@ -10,7 +10,9 @@ SECRET_KEY = 'django-insecure-change-this-in-production-please-use-env-variable'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'miniinstalive-d6cufmhdczhqgab9.switzerlandnorth-01.azurewebsites.net',
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://miniinstalive-d6cufmhdczhqgab9.switzerlandnorth-01.azurewebsites.net',
@@ -196,7 +198,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
