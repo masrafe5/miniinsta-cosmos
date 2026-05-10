@@ -7,6 +7,7 @@ from django.urls import re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('miniinsta.api_urls')),
     path('', include('photos.urls')),
     path('accounts/', include('users.urls')),
 ]

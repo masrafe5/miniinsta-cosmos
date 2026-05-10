@@ -239,9 +239,11 @@
       {% if user.is_authenticated %}
         <a class="nib {% if request.resolver_match.url_name == 'feed' %}on{% endif %}" href="{% url 'feed' %}" title="Home"><i class="fas fa-house"></i></a>
         <a class="nib {% if request.resolver_match.url_name == 'explore_users' %}on{% endif %}" href="{% url 'explore_users' %}" title="Explore"><i class="fas fa-compass"></i></a>
-        <a class="nib {% if request.resolver_match.url_name == 'creator_dashboard' %}on{% endif %}" href="{% url 'creator_dashboard' %}" title="Dashboard"><i class="fas fa-chart-line"></i></a>
+        <a class="nib {% if request.resolver_match.url_name == 'dashboard' %}on{% endif %}" href="{% url 'dashboard' %}" title="Dashboard"><i class="fas fa-chart-line"></i></a>
         {% if user.is_staff %}<a class="nib" href="{% url 'create_creator' %}" title="Add Creator" style="color:var(--pink)"><i class="fas fa-user-plus"></i></a>{% endif %}
-        <a class="btn-up" href="{% url 'upload_photo' %}"><i class="fas fa-plus"></i> Upload</a>
+        {% if user.is_creator %}
+          <a class="btn-up" href="{% url 'upload_photo' %}"><i class="fas fa-plus"></i> Upload</a>
+        {% endif %}
         <div class="drop" style="margin-left:6px">
           <a href="#" style="display:flex;align-items:center;">
             {% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" class="av av28" alt="">

@@ -8,11 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-change-this-in-production-please-use-env-variable'
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = [
-    'miniinstalive-d6cufmhdczhqgab9.switzerlandnorth-01.azurewebsites.net',
-]
+# ALLOWED_HOSTS = [
+#     'miniinstalive-d6cufmhdczhqgab9.switzerlandnorth-01.azurewebsites.net',
+# ]
+ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://miniinstalive-d6cufmhdczhqgab9.switzerlandnorth-01.azurewebsites.net',

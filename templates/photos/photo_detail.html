@@ -70,6 +70,10 @@
           <input type="hidden" name="next" value="{% url 'photo_detail' photo.pk %}">
           <button type="submit" class="act {% if user_liked %}lk{% endif %}">{% if user_liked %}<i class="fas fa-heart"></i>{% else %}<i class="far fa-heart"></i>{% endif %}</button>
         </form>
+        <form method="post" action="{% url 'toggle_save_photo' photo.pk %}" style="display:contents">{% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'photo_detail' photo.pk %}">
+          <button type="submit" class="act {% if user_saved %}on{% endif %}">{% if user_saved %}<i class="fas fa-bookmark"></i>{% else %}<i class="far fa-bookmark"></i>{% endif %}</button>
+        </form>
         {% endif %}
         <span class="fw6 fs13">{{ likes_count }} like{{ likes_count|pluralize }}</span>
         <span class="ml-a fs12 tc3">{{ photo.created_at|date:"N j, Y" }}</span>

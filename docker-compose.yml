@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  web:
+    build: .
+    command: gunicorn miniinsta.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-miniinsta}
+      POSTGRES_USER: ${POSTGRES_USER:-miniinsta}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-miniinsta}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

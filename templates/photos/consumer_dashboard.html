@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Discover – MiniInsta{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+    <div>
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.9rem;letter-spacing:-.02em">Discover</h2>
+      <p class="tc3 fs13" style="margin-top:4px">Browse top photos, saved favorites, and the latest stories.</p>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-bottom:28px">
+    <div class="sc"><div class="sl">Saved Photos</div><div class="sn">{{ saved.count }}</div><div class="si"><i class="fas fa-bookmark"></i></div></div>
+    <div class="sc"><div class="sl">Trending</div><div class="sn">{{ trending.count }}</div><div class="si"><i class="fas fa-fire"></i></div></div>
+    <div class="sc"><div class="sl">Recent Uploads</div><div class="sn">{{ recent.count }}</div><div class="si"><i class="fas fa-clock"></i></div></div>
+  </div>
+
+  <div class="sh"><h4>Saved</h4></div>
+  {% if saved %}
+  <div class="g3" style="margin-bottom:32px">
+    {% for item in saved %}
+    <div class="pc" style="padding:0;">
+      <a href="{% url 'photo_detail' item.photo.pk %}"><img src="{{ item.photo.image.url }}" class="pc-img" alt="{{ item.photo.title }}"></a>
+      <div class="pc-meta" style="padding:14px">
+        <div class="pc-cap"><strong>{{ item.photo.author.username }}</strong> {{ item.photo.title }}</div>
+        <span class="fs12 tc3">Saved {{ item.created_at|timesince }} ago</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="es" style="margin-bottom:32px"><div class="es-i"><i class="fas fa-bookmark"></i></div><h5>No saved posts yet</h5><p>Tap the bookmark icon on any photo to save it here.</p></div>
+  {% endif %}
+
+  <div class="sh"><h4>Trending this week</h4></div>
+  <div class="g3" style="margin-bottom:32px">
+    {% for photo in trending %}
+    <div class="pc">
+      <a href="{% url 'photo_detail' photo.pk %}"><img src="{{ photo.image.url }}" class="pc-img" alt="{{ photo.title }}"></a>
+      <div class="pc-meta"><div class="pc-cap"><strong>{{ photo.author.username }}</strong> {{ photo.title }}</div></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="sh"><h4>Recent uploads</h4></div>
+  <div class="g3">
+    {% for photo in recent %}
+    <div class="gi"><a href="{% url 'photo_detail' photo.pk %}"><img src="{{ photo.image.url }}" alt="{{ photo.title }}"></a></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

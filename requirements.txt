@@ -3,9 +3,14 @@ crispy-bootstrap5==2024.10
 Django==5.2.1
 django-crispy-forms==2.4
 django-jazzmin==3.0.1
+djangorestframework
+djangorestframework-simplejwt
+django-storages==1.14.0
+azure-storage-blob==12.22.0
 dnspython==2.8.0
 gunicorn==26.0.0
 packaging==26.2
+psycopg2-binary==2.9.12
 pillow==12.0.0
 pymongo==3.11.4
 python-dotenv==1.2.2

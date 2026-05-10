@@ -1,23 +1,23 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Photo, Comment, Rating, Like
+from .models import Photo, Comment, Rating, Like, SavedPhoto, Notification
 
 
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
-    list_display   = ['thumb', 'title', 'author', 'likes_count', 'comments_count', 'avg_rating_tag', 'location', 'created_at']
+    list_display = ['thumb', 'title', 'author', 'likes_count', 'comments_count', 'avg_rating_tag', 'location', 'created_at']
     list_display_links = ['title']
-    list_filter    = ['created_at', 'author']
-    search_fields  = ['title', 'caption', 'tags', 'location', 'author__username']
-    ordering       = ['-created_at']
-    list_per_page  = 20
+    list_filter = ['created_at', 'author']
+    search_fields = ['title', 'caption', 'tags', 'location', 'author__username']
+    ordering = ['-created_at']
+    list_per_page = 20
     date_hierarchy = 'created_at'
     readonly_fields = ['created_at', 'updated_at']
 
     fieldsets = (
         ('Photo Info', {'fields': ('author', 'title', 'image', 'caption')}),
-        ('Details',   {'fields': ('location', 'people_present', 'tags')}),
-        ('Timestamps',{'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
+        ('Details', {'fields': ('location', 'people_present', 'tags')}),
+        ('Timestamps', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
     )
 
     def thumb(self, obj):
@@ -49,10 +49,10 @@ class PhotoAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display  = ['author', 'photo', 'short_text', 'created_at']
-    list_filter   = ['created_at']
+    list_display = ['author', 'photo', 'short_text', 'created_at']
+    list_filter = ['created_at']
     search_fields = ['author__username', 'text', 'photo__title']
-    ordering      = ['-created_at']
+    ordering = ['-created_at']
     list_per_page = 30
     readonly_fields = ['created_at']
 
@@ -63,10 +63,10 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display  = ['user', 'photo', 'score_stars', 'created_at']
-    list_filter   = ['score', 'created_at']
+    list_display = ['user', 'photo', 'score_stars', 'created_at']
+    list_filter = ['score', 'created_at']
     search_fields = ['user__username', 'photo__title']
-    ordering      = ['-created_at']
+    ordering = ['-created_at']
     list_per_page = 30
     readonly_fields = ['created_at']
 
@@ -78,9 +78,27 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    list_display  = ['user', 'photo', 'created_at']
-    list_filter   = ['created_at']
+    list_display = ['user', 'photo', 'created_at']
+    list_filter = ['created_at']
     search_fields = ['user__username', 'photo__title']
-    ordering      = ['-created_at']
+    ordering = ['-created_at']
     list_per_page = 30
+    readonly_fields = ['created_at']
+
+
+@admin.register(SavedPhoto)
+class SavedPhotoAdmin(admin.ModelAdmin):
+    list_display = ['user', 'photo', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['user__username', 'photo__title']
+    ordering = ['-created_at']
+    readonly_fields = ['created_at']
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['user', 'actor', 'verb', 'target_photo', 'read', 'created_at']
+    list_filter = ['read', 'created_at']
+    search_fields = ['user__username', 'actor__username', 'verb', 'target_photo__title']
+    ordering = ['-created_at']
     readonly_fields = ['created_at']
